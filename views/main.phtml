@@ -1,0 +1,112 @@
+
+<?php session_start(); ?>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Web Videos Downloader</title>
+
+    <link rel="stylesheet" href="/assets/css/styles.css">
+
+</head>
+<body>
+
+    <?php 
+    
+    if (isset($_SESSION['download_failure'])) 
+    { 
+        
+        ?> <script type="text/javascript"> alert('<?php echo $_SESSION['download_failure']; ?>'); </script> <?php 
+
+        unset($_SESSION['download_failure']);
+    
+    } 
+        
+    ?>
+
+    <main class="main">
+        <section class="main__center">
+
+            <header class="main__center-header">
+
+                <div class="main__center-header__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg></div>
+
+                <h1>Web Videos Downloader</h1>
+
+                <p>Paste the video link right below and download the file</p>
+
+            </header>
+
+            <div class="main__center-downloader">
+                
+                <?php
+                
+                    if (isset($_SESSION['form_failure'])) { ?> <div class="main__center-downloader__failure"><p><?php echo $_SESSION['form_failure']; ?></p></div> <?php }
+                
+                    unset($_SESSION['form_failure']);
+
+                ?>
+
+                <form action="../core/post.php" method="post">
+
+                    <label class="main__center-downloader__field">
+
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/><path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/></svg>
+                        <input type="url" name="link" placeholder="https://example.com/video" aria-label="Video Link" required>
+
+                    </label>
+
+                    <button type="submit" name="submit_button">Download</button>
+
+                </form>
+            </div>
+
+            <div class="main__center-progress">
+                <p class="main__center-progress__text">Downloading File <font id="dots">...</font></p>
+
+                <script type="text/javascript">
+
+                    const dots = document.getElementById('dots');
+                    let  count =                               0;
+
+                    setInterval(() => { count = (count % 3) + 1; dots.textContent = '.'.repeat(count); }, 400);
+
+                </script>
+
+            </div>
+
+            <?php
+            
+                if (isset($_SESSION['done'])) 
+                {
+
+                    ?>
+
+                    <div class="main__center-ready">
+
+                        <div class="main__center-ready__check" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+
+                        <div class="main__center-ready__note"><p>Done!</p></div>
+
+                        <?php $vid = explode('videos/', $_SESSION['done']['file'])[1]; ?>
+
+                        <div class="main__center-ready__download"><a href="../videos/<?php echo $vid; ?>">View</a></div>
+
+                    </div>
+
+                    <?php
+
+                    unset($_SESSION['done']);
+
+                }
+            
+            ?>
+
+        </section>
+    </main>
+    
+</body>
+</html>
